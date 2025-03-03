@@ -36,11 +36,10 @@ class Program
             Console.WriteLine("2. Assign a Patient to a Doctor");
             Console.WriteLine("3. Cancel Appointment");
             Console.WriteLine("4. Display All Appointments");
-            Console.WriteLine("5. View Doctor Availability");
-            Console.WriteLine("6. Add New Doctor");
-            Console.WriteLine("7. Display All Doctors");
-            Console.WriteLine("8. Display Sorted Appointments for a Doctor");
-            Console.WriteLine("9. Exit");
+            Console.WriteLine("5. Add New Doctor");
+            Console.WriteLine("6. Display All Doctors");
+            Console.WriteLine("7. Display Sorted Appointments for a Doctor");
+            Console.WriteLine("8. Exit");
             Console.Write("Enter your choice: ");
 
             string choice = Console.ReadLine();
@@ -51,6 +50,13 @@ class Program
                     appointmentList.AddAppointment(doctors);
                     break;
                 case "2":
+                    Console.Write("Enter Appointment ID to assign: ");
+                    if (!int.TryParse(Console.ReadLine(), out int appointmentId))
+                    {
+                        Console.WriteLine("⚠ Invalid Appointment ID format.");
+                        break;
+                    }
+                    appointmentList.AssignPatientToDoctor(appointmentId, doctors);
                     break;
                 case "3":
                     Console.Write("Enter Appointment ID to Cancel: ");
@@ -61,21 +67,18 @@ class Program
                     break;
                 case "4":
                     appointmentList.DisplayAppointments();
-                    break;
+                    break;                
                 case "5":
-                    //doctors.DisplayDoctors();
-                    break;
-                case "6":
                     Console.Write("Enter Doctor's Name: ");
                     string doctorName = Console.ReadLine();
                     Console.Write("Enter Doctor's Specialization: ");
                     string specialization = Console.ReadLine();
                     doctors.AddDoctor(doctorName, specialization);
                     break;
-                case "7":
+                case "6":
                     doctors.DisplayDoctors();
                     break;
-                case "8":
+                case "7":
                     Console.Write("Enter Doctor ID: ");
                     int doctorId;
                     if (int.TryParse(Console.ReadLine(), out doctorId))
@@ -87,7 +90,7 @@ class Program
                         Console.WriteLine("⚠️ Invalid Doctor ID format.");
                     }
                     break;
-                case "9":
+                case "8":
                     Console.WriteLine("🔚 Exiting...");
                     return;
                 default:

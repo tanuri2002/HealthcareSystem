@@ -132,5 +132,64 @@ namespace HealthcareSystem
                 temp = temp.Next;
             }
         }
+        // New method to assign a patient to a doctor
+        public void AssignPatientToDoctor(int appointmentId, DoctorBST doctors)
+        {
+
+
+            if (head == null)
+            {
+                Console.WriteLine("⚠ No appointments available to assign.");
+                return;
+            }
+
+            AppointmentNode appointmentToAssign = null;
+            if (head.Id == appointmentId)
+            {
+                appointmentToAssign = head;
+                head = head.Next;
+            }
+            else
+            {
+                AppointmentNode current = head;
+                AppointmentNode previous = null;
+                while (current != null && current.Id != appointmentId)
+                {
+                    previous = current;
+                    current = current.Next;
+                }
+                if (current == null)
+                {
+                    Console.WriteLine($"⚠ Appointment ID {appointmentId} not found.");
+                    return;
+                }
+                appointmentToAssign = current;
+                previous.Next = current.Next;
+            }
+
+
+            int existingDoctorId = appointmentToAssign.DoctorId; // Use a unique name
+            if (existingDoctorId == 0) // Handle unassigned case if needed
+            {
+                Console.WriteLine($"⚠ Appointment ID {appointmentId} has no Doctor ID assigned. Please assign a doctor first.");
+                return;
+            }
+
+            Doctor selectedDoctor = doctors.FindDoctorById(existingDoctorId);
+            if (selectedDoctor == null)
+            {
+                Console.WriteLine($"⚠ Doctor ID {existingDoctorId} not found for appointment ID {appointmentId}.");
+                return;
+            }
+
+            if (!selectedDoctor.Appointments.Exists(a => a.Id == appointmentId))
+            {
+                selectedDoctor.Appointments.Add(appointmentToAssign);
+            }
+
+            appointmentToAssign.Status = "Assigned"; // Optional: Update status if you're using it
+
+            Console.WriteLine($"✅ Patient {appointmentToAssign.PatientName} (ID: {appointmentId}) assigned to Dr. {selectedDoctor.Name} (ID: {existingDoctorId})");
+        }
     }
 }
