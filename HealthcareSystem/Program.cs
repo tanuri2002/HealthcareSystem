@@ -4,19 +4,20 @@ using CsvHelper.Configuration;
 using System.Globalization;
 using System.IO;
 using HealthcareSystem;
+using System.Diagnostics;
 
 class Program
 {
     static void Main()
     {
-        Console.WriteLine(" __________________________________________________________ ");
-        Console.WriteLine("|                                                          |");
-        Console.WriteLine("|       #####    #####   #####                             |");
-        Console.WriteLine("|       #   #    #   #   #   #   MEDICARE                  |");
-        Console.WriteLine("|       #   #    #   #   #   #   HEALTHCARE APPOINTMENT    |");
-        Console.WriteLine("|       #####    #####   #####   MANAGEMENT SYSTEM         |");
-        Console.WriteLine("|                                                          |");
-        Console.WriteLine("|__________________________________________________________|");
+        Console.WriteLine(" _____________________________________________________ ");
+        Console.WriteLine("|                                                     |");
+        Console.WriteLine("|     ##      ##      ##                              |");
+        Console.WriteLine("|     ##      ##      ##    MEDICARE                  |");
+        Console.WriteLine("|   ######  ######  ######  HEALTHCARE APPOINTMENT    |");
+        Console.WriteLine("|     ##      ##      ##    MANAGEMENT SYSTEM         |");
+        Console.WriteLine("|     ##      ##      ##                              |");
+        Console.WriteLine("|_____________________________________________________|");
 
         AppointmentList appointmentList = new AppointmentList();
         DoctorBST doctors = new DoctorBST();
@@ -40,7 +41,7 @@ class Program
             Console.WriteLine("6. Display All Doctors");
             Console.WriteLine("7. Display Sorted Appointments for a Doctor");
             Console.WriteLine("8. Exit");
-            Console.Write("Enter your choice: ");
+            Console.Write("\nEnter your choice: ");
 
             string choice = Console.ReadLine();
 
@@ -98,6 +99,23 @@ class Program
                     break;
             }
         }
+        List<AppointmentNode> testList = new List<AppointmentNode>();
+        for (int i = 0; i < 100; i++)
+        {
+            testList.Add(new AppointmentNode(i, $"Patient{i}", 30, "Condition", 1));
+        }
+
+        // Test each sorting method
+        TestSorting(testList, BubbleSort, "Bubble Sort");
+        TestSorting(testList, MergeSortWrapper, "Merge Sort");
+        TestSorting(testList, QuickSortWrapper, "Quick Sort");
+        //TestSorting(testList, ListSort, "List.Sort");
+
+        // Helper methods
+        static void BubbleSort(List<AppointmentNode> list) { /* Your Bubble Sort code */ }
+        static void MergeSortWrapper(List<AppointmentNode> list) { /* Your Merge Sort code */ }
+        static void QuickSortWrapper(List<AppointmentNode> list) { /* Your Quick Sort code */ }
+        //static void ListSort(List<AppointmentNode> list) { list.Sort((a, b) => a.Id.CompareTo(b.Id)); }
     }
 
     static void LoadDoctorsFromCsv(DoctorBST doctors, string filePath)
@@ -142,7 +160,7 @@ class Program
                     {
                         doctors.AddDoctorFromCsv(doctor.Id, doctor.Name, doctor.Specialization);
                     }
-                    Console.WriteLine($"✅ Loaded {records.Count} doctors from {filePath}");
+                    //Console.WriteLine($"✅ Loaded {records.Count} doctors from {filePath}");
                 }
             }
             else
@@ -200,7 +218,7 @@ class Program
                     {
                         appointmentList.AddAppointmentFromCsv(appointment, doctors);
                     }
-                    Console.WriteLine($"✅ Loaded {records.Count} appointments from {filePath}");
+                    //Console.WriteLine($"✅ Loaded {records.Count} appointments from {filePath}");
                 }
             }
             else
@@ -212,5 +230,13 @@ class Program
         {
             Console.WriteLine($"⚠️ Error loading appointments from CSV: {ex.Message}");
         }
+    }
+    public static void TestSorting(List<AppointmentNode> appointments, Action<List<AppointmentNode>> sortMethod, string methodName)
+    {
+        List<AppointmentNode> copy = new List<AppointmentNode>(appointments);
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        sortMethod(copy);
+        stopwatch.Stop();
+        Console.WriteLine($"{methodName} for {appointments.Count} items: {stopwatch.Elapsed.TotalMilliseconds} ms");
     }
 }

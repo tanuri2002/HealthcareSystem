@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace HealthcareSystem
 {
@@ -86,16 +87,105 @@ namespace HealthcareSystem
                 return SearchDoctor(node.Left, id);
             else
                 return SearchDoctor(node.Right, id);
-        }
-        
-        /// ////////////////////////////////////////////////////////////////////////////////////
-        
-
-        //Bubble Sort
-        /*
-        private void SortAppointmentsByPatientId(List<AppointmentNode> appointments)
+        }      
+        private void SortAppointmentsByPatientId(List<AppointmentNode> appointments, string methodName)
         {
-            int n = appointments.Count;
+            if (appointments.Count <= 1)
+            {
+                Console.WriteLine($"{methodName} for {appointments.Count} items: 0 ms (list too small)");
+                return;
+            }
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            // Choose one sorting algorithm (e.g., Merge Sort)
+            BubbleSort(appointments, 0, appointments.Count - 1);
+
+            stopwatch.Stop();
+            Console.WriteLine($"{methodName} for {appointments.Count} items: {stopwatch.Elapsed.TotalMilliseconds} ms");
+        }
+       
+       
+        /////////////////////////////////////////////////////////////////////////////////////////     
+        //Merge Sort
+        /*private void MergeSort(List<AppointmentNode> appointments, int left, int right)
+        {
+            if (left < right)
+            {
+                int mid = (left + right) / 2;
+                MergeSort(appointments, left, mid);
+                MergeSort(appointments, mid + 1, right);
+                Merge(appointments, left, mid, right);
+            }
+        }
+
+        private void Merge(List<AppointmentNode> appointments, int left, int mid, int right)
+        {
+            List<AppointmentNode> temp = new List<AppointmentNode>(right - left + 1);
+            int i = left, j = mid + 1;
+
+            while (i <= mid && j <= right)
+            {
+                if (appointments[i].Id <= appointments[j].Id)
+                {
+                    temp.Add(appointments[i++]);
+                }
+                else
+                {
+                    temp.Add(appointments[j++]);
+                }
+            }
+
+            while (i <= mid) temp.Add(appointments[i++]);
+            while (j <= right) temp.Add(appointments[j++]);
+
+            for (int k = 0; k < temp.Count; k++)
+                appointments[left + k] = temp[k];
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+        ///Quick Sort
+   /*
+   private void QuickSort(List<AppointmentNode> appointments, int low, int high)
+        {
+            if (low < high)
+            {
+                int pivotIndex = Partition(appointments, low, high);
+                QuickSort(appointments, low, pivotIndex - 1);
+                QuickSort(appointments, pivotIndex + 1, high);
+            }
+        }
+
+        private int Partition(List<AppointmentNode> appointments, int low, int high)
+        {
+            int pivot = appointments[high].Id;
+            int i = low - 1;
+
+            for (int j = low; j < high; j++)
+            {
+                if (appointments[j].Id <= pivot)
+                {
+                    i++;
+                    var temp = appointments[i];
+                    appointments[i] = appointments[j];
+                    appointments[j] = temp;
+                }
+            }
+
+            var tempPivot = appointments[i + 1];
+            appointments[i + 1] = appointments[high];
+            appointments[high] = tempPivot;
+
+            return i + 1;
+        }*/
+
+   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   //Bubble Sort
+       private void BubbleSort(List<AppointmentNode> appointments,int low, int high)
+        {
+            //int n = appointments.Count;
+            int n = high - low + 1; // Number of elements in the range
             for (int i = 0; i < n - 1; i++)
             {
                 for (int j = 0; j < n - i - 1; j++)
@@ -108,125 +198,7 @@ namespace HealthcareSystem
                     }
                 }
             }
-        }*/
-     /////////////////////////////////////////////////////////////////////////////////////////////////////////////       
-    //Quick Sort
-        
-    private void SortAppointmentsByPatientId(List<AppointmentNode> appointments){
-            if (appointments == null || appointments.Count <= 1)
-                return; // Base case: already sorted or empty
-
-            QuickSort(appointments, 0, appointments.Count - 1);
-    }
-
-    private void QuickSort(List<AppointmentNode> appointments, int low, int high){
-            if (low < high){
-
-            // Partition the list and get the pivot index    
-                int pivotIndex = Partition(appointments, low, high);
-
-            // Recursively sort the sublists
-                QuickSort(appointments, low, pivotIndex - 1);  // Sort left sublist
-                QuickSort(appointments, pivotIndex + 1, high); // Sort right sublist
-            }
-    }
-
-    private int Partition(List<AppointmentNode> appointments, int low, int high){
-            // Choose the last element as the pivot
-                int pivot = appointments[high].Id;
-                int i = low - 1; // Index of the smaller element
-
-            for (int j = low; j < high; j++){
-                // If the current element is smaller than or equal to the pivot
-                    if (appointments[j].Id <= pivot){
-                           i++;
-
-                            // Swap appointments[i] and appointments[j]
-                                    var temp = appointments[i];
-                                    appointments[i] = appointments[j];
-                                    appointments[j] = temp;
-                    }
-            }
-
-            // Swap the pivot element with the element at i+1
-
-            var tempPivot = appointments[i + 1];
-            appointments[i + 1] = appointments[high];
-            appointments[high] = tempPivot;
-
-            return i + 1; // Return the pivot index
-    }/*
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //Merge Sort
-    private void SortAppointmentsByPatientId(List<AppointmentNode> appointments){
-        if (appointments == null || appointments.Count <= 1)
-        return; // Base case: already sorted or empty
-
-        MergeSort(appointments, 0, appointments.Count - 1);
-    }
-
-    private void MergeSort(List<AppointmentNode> appointments, int left, int right){
-        if (left < right){
-
-        // Find the middle point
-        int mid = left + (right - left) / 2;
-
-        // Recursively sort the two halves
-        MergeSort(appointments, left, mid);      // Sort left half
-        MergeSort(appointments, mid + 1, right); // Sort right half
-
-        // Merge the sorted halves
-        Merge(appointments, left, mid, right);
         }
-    }
-
-    private void Merge(List<AppointmentNode> appointments, int left, int mid, int right){
-        // Create temporary arrays for the two halves
-            int n1 = mid - left + 1; // Size of the left half
-            int n2 = right - mid;    // Size of the right half
-
-            var leftArray = new AppointmentNode[n1];
-            var rightArray = new AppointmentNode[n2];
-
-       // Copy data to temporary arrays
-            for (int i = 0; i < n1; i++)
-                leftArray[i] = appointments[left + i];
-
-            for (int j = 0; j < n2; j++)
-                rightArray[j] = appointments[mid + 1 + j];
-
-      // Merge the two arrays back into the original list
-            int iLeft = 0, iRight = 0; // Initial indexes of the two subarrays
-            int k = left;              // Initial index of the merged array
-
-        while (iLeft < n1 && iRight < n2){
-            if (leftArray[iLeft].Id <= rightArray[iRight].Id){
-                appointments[k] = leftArray[iLeft];
-                iLeft++;
-            }
-            else{
-                appointments[k] = rightArray[iRight];
-                iRight++;
-            }
-            k++;
-        }
-
-        // Copy remaining elements of leftArray (if any)
-        while (iLeft < n1){
-            appointments[k] = leftArray[iLeft];
-            iLeft++;
-            k++;
-        }
-
-        // Copy remaining elements of rightArray (if any)
-        while (iRight < n2){
-            appointments[k] = rightArray[iRight];
-            iRight++;
-            k++;
-        }
-    }*/
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
 
         public void DisplayDoctorAppointments(int doctorId)
         {
@@ -236,20 +208,27 @@ namespace HealthcareSystem
                 Console.WriteLine("⚠ Doctor not found.");
                 return;
             }
-            var activeAppointments = doctor.Appointments.FindAll(a => a.Status != "Assigned"); // Only show non-assigned appointments
-            if (activeAppointments.Count == 0)
+
+            if (doctor.Appointments.Count == 0)
             {
-                Console.WriteLine($"👨‍⚕ Dr. {doctor.Name} (ID: {doctor.Id}, Specialization: {doctor.Specialization}) has no active appointments.");
+                Console.WriteLine($"👨‍⚕ Dr. {doctor.Name} (ID: {doctor.Id}, Specialization: {doctor.Specialization}) has no appointments.");
                 return;
             }
 
-            SortAppointmentsByPatientId(activeAppointments);
+            // Test different sorting algorithms by uncommenting one
+            //SortAppointmentsByPatientId(doctor.Appointments, "Merge Sort");
+            //SortAppointmentsByPatientId(doctor.Appointments, "Quick Sort");
+            SortAppointmentsByPatientId(doctor.Appointments, "Bubble Sort"); // Default for now
 
-            Console.WriteLine($"\n📋 Active Appointments for Dr. {doctor.Name} (ID: {doctor.Id}, Specialization: {doctor.Specialization}):");
-            foreach (var appointment in activeAppointments)
+            Console.WriteLine($"\n📋 Appointments for Dr. {doctor.Name} (ID: {doctor.Id}, Specialization: {doctor.Specialization}):");
+            foreach (var appointment in doctor.Appointments)
             {
-                Console.WriteLine($"   🔹 {appointment.PatientName} (ID: {appointment.Id}, Age: {appointment.PatientAge}, Condition: {appointment.PatientCondition}, Status: {appointment.Status})");
+                Console.WriteLine($"   🔹 {appointment.PatientName} (ID: {appointment.Id}, Age: {appointment.PatientAge}, Condition: {appointment.PatientCondition})");
             }
         }
+
+
+
     }
+
 }
